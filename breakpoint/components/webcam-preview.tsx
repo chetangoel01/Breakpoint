@@ -52,19 +52,19 @@ export function WebcamPreview() {
   return (
     <div className="relative">
       {/* Compact Camera Preview */}
-      <div className="w-48 h-36 rounded-2xl overflow-hidden bg-slate-100 dark:bg-slate-700 border border-slate-200/50 dark:border-slate-600/50">
+      <div className="w-32 h-24 sm:w-40 sm:h-30 md:w-48 md:h-36 rounded-2xl overflow-hidden bg-slate-100 dark:bg-slate-700 border border-slate-200/50 dark:border-slate-600/50">
         {isEnabled ? (
           <video ref={videoRef} autoPlay playsInline muted className="w-full h-full object-cover" />
         ) : (
           <div className="flex items-center justify-center h-full">
             {error ? (
               <div className="text-center p-2">
-                <CameraOff className="w-6 h-6 text-slate-400 dark:text-slate-500 mx-auto mb-1" />
+                <CameraOff className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 text-slate-400 dark:text-slate-500 mx-auto mb-1" />
                 <p className="text-xs text-slate-500 dark:text-slate-400">{error}</p>
               </div>
             ) : (
               <div className="text-center p-2">
-                <Camera className="w-6 h-6 text-slate-400 dark:text-slate-500 mx-auto mb-1" />
+                <Camera className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 text-slate-400 dark:text-slate-500 mx-auto mb-1" />
                 <p className="text-xs text-slate-500 dark:text-slate-400">Camera off</p>
               </div>
             )}
@@ -76,9 +76,9 @@ export function WebcamPreview() {
       <Button
         onClick={isEnabled ? stopWebcam : startWebcam}
         size="icon"
-        className="absolute -top-2 -right-2 w-8 h-8 rounded-full bg-white/90 dark:bg-slate-800/90 hover:bg-white dark:hover:bg-slate-800 shadow-lg border border-slate-200/50 dark:border-slate-600/50"
+        className="absolute -top-1 -right-1 sm:-top-2 sm:-right-2 w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 rounded-full bg-white/90 dark:bg-slate-800/90 hover:bg-white dark:hover:bg-slate-800 shadow-lg border border-slate-200/50 dark:border-slate-600/50"
       >
-        {isEnabled ? <CameraOff className="w-3 h-3" /> : <Camera className="w-3 h-3" />}
+        {isEnabled ? <CameraOff className="w-2 h-2 sm:w-2.5 sm:h-2.5 md:w-3 md:h-3" /> : <Camera className="w-2 h-2 sm:w-2.5 sm:h-2.5 md:w-3 md:h-3" />}
       </Button>
     </div>
   )

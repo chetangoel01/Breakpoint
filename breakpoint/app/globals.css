@@ -54,6 +54,44 @@
   body {
     background-color: hsl(var(--background));
     color: hsl(var(--foreground));
+    overflow: hidden;
+  }
+  
+  /* Responsive scaling utilities */
+  .scale-text {
+    font-size: clamp(2rem, 8vw, 4.5rem);
+  }
+  
+  .scale-text-lg {
+    font-size: clamp(1.5rem, 6vw, 2.5rem);
+  }
+  
+  .scale-text-md {
+    font-size: clamp(1rem, 4vw, 1.5rem);
+  }
+  
+  .scale-text-sm {
+    font-size: clamp(0.75rem, 3vw, 1rem);
+  }
+  
+  .scale-text-xs {
+    font-size: clamp(0.5rem, 2vw, 0.75rem);
+  }
+  
+  .scale-padding {
+    padding: clamp(1rem, 4vw, 2rem);
+  }
+  
+  .scale-gap {
+    gap: clamp(0.5rem, 2vw, 1rem);
+  }
+  
+  .scale-space-y {
+    --space-y: clamp(0.5rem, 2vw, 1rem);
+  }
+  
+  .scale-space-y > * + * {
+    margin-top: var(--space-y);
   }
 }
 

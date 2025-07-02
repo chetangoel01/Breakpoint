@@ -7,7 +7,7 @@ interface TimerBarProps {
 
 export function TimerBar({ progress, isRunning }: TimerBarProps) {
   return (
-    <div className="w-full space-y-2">
+    <div className="w-full scale-space-y">
       <div className="relative h-2 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
         <div
           className={`absolute left-0 top-0 h-full rounded-full transition-all duration-1000 ease-out ${
@@ -28,7 +28,7 @@ export function TimerBar({ progress, isRunning }: TimerBarProps) {
         )}
       </div>
 
-      <div className="flex justify-between text-xs text-slate-500 dark:text-slate-400">
+      <div className="flex justify-between scale-text-xs text-slate-500 dark:text-slate-400">
         <span>0:00</span>
         <span className={isRunning ? "text-blue-600 dark:text-blue-400" : ""}>
           {isRunning ? "Focus Time" : "Paused"}
