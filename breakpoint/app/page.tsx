@@ -111,6 +111,10 @@ export default function FatigueTracker() {
               setIsRunning(false)
               setShowBreakModal(true)
               setDrowsyDuration(0)
+              // Restore from mini mode if needed
+              if (isMinimized) {
+                handleRestoreFromMini()
+              }
             }
           }
           
@@ -120,7 +124,7 @@ export default function FatigueTracker() {
     }, 1000)
 
     return () => clearInterval(interval)
-  }, [fatigueStatus, isRunning, settings.fatigueDetection])
+  }, [fatigueStatus, isRunning, settings.fatigueDetection, isMinimized])
 
   // Adaptive timer adjustments based on fatigue
   useEffect(() => {
@@ -168,6 +172,10 @@ export default function FatigueTracker() {
               duration: settings.workDuration,
               breakInterval: settings.longBreakInterval
             }])
+            // Restore from mini mode if needed
+            if (isMinimized) {
+              handleRestoreFromMini()
+            }
             return 0
           }
           return prev - 1
@@ -176,7 +184,7 @@ export default function FatigueTracker() {
     }
 
     return () => clearInterval(interval)
-  }, [isRunning, timeRemaining, settings.workDuration, settings.longBreakInterval])
+  }, [isRunning, timeRemaining, settings.workDuration, settings.longBreakInterval, isMinimized])
 
   // Calculate stats based on completed sessions
   const calculateStats = () => {
