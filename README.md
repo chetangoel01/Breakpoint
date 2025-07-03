@@ -47,7 +47,7 @@ Contains the drowsiness detection datasets:
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/breakpoint.git
+git clone https://github.com/chetangoel01/breakpoint.git
 cd breakpoint
 ```
 
