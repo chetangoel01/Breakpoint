@@ -1,16 +1,17 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
-import { Settings, Minimize2, Maximize2 } from "lucide-react"
+import { Settings, Minimize2, Maximize2, HelpCircle } from "lucide-react"
 import { useEffect, useState } from "react"
 
 interface TitleBarProps {
   onMinimize?: () => void
   isMinimized?: boolean
   onOpenSettings?: () => void
+  onOpenHelp?: () => void
 }
 
-export function TitleBar({ onMinimize, isMinimized = false, onOpenSettings }: TitleBarProps) {
+export function TitleBar({ onMinimize, isMinimized = false, onOpenSettings, onOpenHelp }: TitleBarProps) {
   const [status, setStatus] = useState<string>("alert")
 
   console.log('🎨 [TITLE-BAR] Render - isMinimized:', isMinimized, 'status:', status)
@@ -66,6 +67,16 @@ export function TitleBar({ onMinimize, isMinimized = false, onOpenSettings }: Ti
       
       {/* Right side - Controls */}
       <div className="flex items-center gap-2" style={{ WebkitAppRegion: 'no-drag' } as React.CSSProperties}>
+        {onOpenHelp && (
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            className="rounded-full w-8 h-8"
+            onClick={onOpenHelp}
+          >
+            <HelpCircle className="w-4 h-4" />
+          </Button>
+        )}
         <Button 
           variant="ghost" 
           size="icon" 

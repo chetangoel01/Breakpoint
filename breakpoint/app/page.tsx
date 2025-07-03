@@ -7,6 +7,7 @@ import { TitleBar } from "@/components/title-bar"
 import { SettingsModal, TimerSettings, defaultSettings } from "@/components/settings-modal"
 import { Button } from "@/components/ui/button"
 import { Play, Pause, RotateCcw, Coffee } from "lucide-react"
+import { WelcomeModal } from "@/components/welcome-modal"
 
 declare global {
   interface Window {
@@ -31,6 +32,9 @@ export default function FatigueTracker() {
   const [totalTime, setTotalTime] = useState(25 * 60)
   const [sessionCount, setSessionCount] = useState(0)
   
+  // Welcome modal state
+  const [showWelcomeModal, setShowWelcomeModal] = useState(false)
+  
   // Stats tracking
   const [completedSessions, setCompletedSessions] = useState<Array<{duration: number, breakInterval: number}>>([])
   
@@ -48,21 +52,24 @@ export default function FatigueTracker() {
   const [drowsyDuration, setDrowsyDuration] = useState(0) // seconds of continuous drowsiness
   const [lastStatusChange, setLastStatusChange] = useState(Date.now())
 
+  // Check if it's the first visit when the component mounts
+  useEffect(() => {
+    const hasSeenWelcome = localStorage.getItem('hasSeenWelcome')
+    if (!hasSeenWelcome) {
+      setShowWelcomeModal(true)
+      localStorage.setItem('hasSeenWelcome', 'true')
+    }
+  }, [])
+
   // Listen for status updates from the fatigue detector
   useEffect(() => {
-    console.log('📡 [PAGE] Status listener useEffect triggered - isMinimized:', isMinimized)
-    
     if (isMinimized && window.drowsiness && window.drowsiness.onMiniStatusUpdate) {
-      console.log('📡 [PAGE] Setting up status listener for border colors')
       window.drowsiness.onMiniStatusUpdate((status: string) => {
-        console.log('📥 [PAGE] Received status for border:', status)
         setCurrentStatus(status)
         handleFatigueStatusUpdate(status as "alert" | "drowsy")
       })
-    } else {
-      console.log('⏸️ [PAGE] Not setting up status listener - isMinimized:', isMinimized)
     }
-  }, [isMinimized]) // Change dependency to isMinimized
+  }, [isMinimized])
 
   // Initialize timer with settings
   useEffect(() => {
@@ -100,16 +107,10 @@ export default function FatigueTracker() {
           
           // Check if we should suggest a break
           if (newDuration >= settings.fatigueDetection.drowsyThreshold) {
-            console.log('🚨 [FATIGUE] Drowsiness threshold reached, suggesting break')
-            
             if (settings.fatigueDetection.autoBreak) {
-              // Automatically trigger break
               setIsRunning(false)
               setShowBreakModal(true)
               setDrowsyDuration(0)
-            } else {
-              // Show notification or visual indicator (could add toast here)
-              console.log('💡 [FATIGUE] Consider taking a break - drowsy for', newDuration, 'seconds')
             }
           }
           
@@ -136,11 +137,6 @@ export default function FatigueTracker() {
     }
 
     const multiplier = getSensitivityMultiplier()
-    
-    // If drowsy and sensitivity is high, time moves faster (suggests break sooner)
-    if (multiplier > 1 && fatigueStatus === "drowsy") {
-      console.log('⚡ [FATIGUE] Accelerating timer due to drowsiness (multiplier:', multiplier, ')')
-    }
   }, [fatigueStatus, settings.fatigueDetection, isRunning])
 
   const getBorderColor = (status: string): string => {
@@ -237,7 +233,11 @@ export default function FatigueTracker() {
     setShowSettingsModal(true)
   }
 
-  // Load settings from localStorage on mount
+  const handleOpenHelp = () => {
+    setShowWelcomeModal(true)
+  }
+
+  // Load settings from localStorage
   useEffect(() => {
     const savedSettings = localStorage.getItem('breakpoint-settings')
     if (savedSettings) {
@@ -250,23 +250,15 @@ export default function FatigueTracker() {
     }
   }, [])
 
-
-
-
   const handleMinimize = () => {
     const newMinimizedState = !isMinimized
-    console.log('🔄 [PAGE] Minimize button clicked, changing from', isMinimized, 'to', newMinimizedState)
     setIsMinimized(newMinimizedState)
     if (window.electronAPI) {
-      console.log('📤 [PAGE] Sending toggle-mini-mode to electron')
       window.electronAPI.toggleMiniMode(newMinimizedState)
-    } else {
-      console.warn('⚠️ [PAGE] window.electronAPI not available')
     }
   }
 
   const handleRestoreFromMini = () => {
-    console.log('🔄 [PAGE] Restore from mini clicked')
     setIsMinimized(false)
     if (window.electronAPI) {
       window.electronAPI.restoreFromMini()
@@ -295,9 +287,7 @@ export default function FatigueTracker() {
           <div className="flex flex-col items-center gap-1">
             <div className="flex items-center gap-3 pt-3">
               <div className="text-center">
-                {/* <div className="text-lg font-extralight text-slate-800 dark:text-slate-100 tabular-nums tracking-tight"> */}
-                  {formatTime(timeRemaining)}
-                {/* </div> */}
+                {formatTime(timeRemaining)}
                 <div className="text-xs text-slate-500 dark:text-slate-400">
                   {isRunning ? "Focus" : "Paused"}
                 </div>
@@ -317,19 +307,19 @@ export default function FatigueTracker() {
             className="absolute top-0 left-0 right-0 h-20 cursor-pointer opacity-0 hover:opacity-100 bg-black/5 dark:bg-white/5 transition-opacity duration-200 rounded-t-xl"
             title="Click here to restore window"
           />
-          {/* <button
-            onClick={handleRestoreFromMini}
-            className="absolute bottom-20 left-0 right-0 h-8 cursor-pointer opacity-0 hover:opacity-100 bg-black/5 dark:bg-white/5 transition-opacity duration-200"
-            title="Click here to restore window"
-          /> */}
         </div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen glass--effect flex items-center justify-center pt-16 transition-colors duration-300">
-      <TitleBar onMinimize={handleMinimize} isMinimized={isMinimized} onOpenSettings={handleOpenSettings} />
+    <main className="relative min-h-screen bg-white dark:bg-slate-900 overflow-hidden">
+      <TitleBar 
+        onMinimize={handleMinimize}
+        isMinimized={isMinimized}
+        onOpenSettings={() => setShowSettingsModal(true)}
+        onOpenHelp={handleOpenHelp}
+      />
       <div className="w-full h-full flex flex-col p-4">
         <div className="flex-1 scale-padding space-y-8 flex flex-col justify-center">
           <div className="flex items-center scale-gap">
@@ -426,6 +416,10 @@ export default function FatigueTracker() {
             </div>
           </div>
         </div>
+        <WelcomeModal 
+          isOpen={showWelcomeModal} 
+          onClose={() => setShowWelcomeModal(false)} 
+        />
         <BreakModal 
           isOpen={showBreakModal} 
           onClose={handleBreakComplete} 
@@ -441,6 +435,6 @@ export default function FatigueTracker() {
           onSettingsChange={handleSettingsChange}
         />
       </div>
-    </div>
+    </main>
   )
 }
