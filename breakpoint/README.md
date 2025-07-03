@@ -23,7 +23,7 @@ Breakpoint is an intelligent Pomodoro timer application that helps you maintain 
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/breakpoint.git
+git clone https://github.com/chetangoel01/breakpoint.git
 cd breakpoint
 ```
 
