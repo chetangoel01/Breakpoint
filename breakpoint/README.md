@@ -1,36 +1,157 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Breakpoint - Smart Focus Timer with Fatigue Detection
 
-## Getting Started
+Breakpoint is an intelligent Pomodoro timer application that helps you maintain productivity while preventing fatigue. It uses computer vision to detect drowsiness and automatically suggests breaks when needed.
 
-First, run the development server:
+## Features
+
+- 🕒 Customizable Pomodoro timer
+- 👁️ Real-time fatigue detection using computer vision
+- 🔄 Adaptive break suggestions based on drowsiness levels
+- 🖥️ Mini-mode for distraction-free focus
+- 📊 Session tracking and statistics
+- 🌓 Dark/Light mode support
+- 🎯 Customizable work/break durations
+- 🤖 ML-powered drowsiness detection
+
+## Prerequisites
+
+- Node.js 18+ 
+- Python 3.8+ (for ML model)
+- npm or yarn
+
+## Installation
+
+1. Clone the repository:
+```bash
+git clone https://github.com/yourusername/breakpoint.git
+cd breakpoint
+```
+
+2. Install dependencies:
+```bash
+npm install
+# or
+yarn install
+```
+
+3. Set up the Python environment for the ML model:
+```bash
+cd model
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+pip install -r requirements.txt
+```
+
+## Development
+
+Run the development server:
 
 ```bash
 npm run dev
 # or
 yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+This will start both the Next.js development server and the Electron application.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Building for Distribution
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Prerequisites for Building
 
-## Learn More
+- Windows: No additional requirements
+- macOS: Xcode Command Line Tools
+- Linux: Required build tools (`build-essential`, etc.)
 
-To learn more about Next.js, take a look at the following resources:
+### Build Commands
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+1. Build the application:
+```bash
+npm run electron:dist
+# or
+yarn electron:dist
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+This will create distributable packages in the `dist` directory.
 
-## Deploy on Vercel
+### Docker Container (Optional)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+To containerize the application for development or testing:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1. Create a Dockerfile in the root directory:
+```dockerfile
+FROM node:18-slim
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    python3 \
+    python3-pip \
+    libgl1-mesa-glx \
+    libglib2.0-0
+
+# Set working directory
+WORKDIR /app
+
+# Copy package files
+COPY breakpoint/package*.json ./
+
+# Install dependencies
+RUN npm install
+
+# Copy project files
+COPY breakpoint/ ./
+COPY model/ ../model/
+
+# Build the application
+RUN npm run build
+
+# Expose port
+EXPOSE 3000
+
+# Start the application
+CMD ["npm", "start"]
+```
+
+2. Build the Docker image:
+```bash
+docker build -t breakpoint .
+```
+
+3. Run the container:
+```bash
+docker run -p 3000:3000 breakpoint
+```
+
+Note: The Docker container is primarily for development and testing. For end-user distribution, use the electron-builder packages.
+
+## Configuration
+
+The application can be configured through the settings modal within the app. You can adjust:
+
+- Work duration
+- Short break duration
+- Long break duration
+- Long break interval
+- Fatigue detection settings
+  - Enable/disable
+  - Sensitivity level
+  - Auto-break threshold
+
+## Contributing
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Acknowledgments
+
+- Next.js for the web framework
+- Electron for the desktop application framework
+- MediaPipe for face detection
+- TailwindCSS for styling
+- All other open-source contributors
