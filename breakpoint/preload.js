@@ -1,8 +1,9 @@
 const { contextBridge, ipcRenderer } = require('electron');
 
 contextBridge.exposeInMainWorld('electronAPI', {
-  toggleMiniMode: (isMinimized) => ipcRenderer.send('toggle-mini-mode', isMinimized),
-  restoreFromMini: () => ipcRenderer.send('restore-from-mini'),
+  toggleMiniMode: (isMinimized) => ipcRenderer.invoke('toggle-mini-mode', isMinimized),
+  restoreFromMini: () => ipcRenderer.invoke('restore-from-mini'),
+  updateFatigueDetection: (enabled) => ipcRenderer.invoke('update-fatigue-detection', enabled),
 });
 
 contextBridge.exposeInMainWorld('drowsiness', {

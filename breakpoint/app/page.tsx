@@ -12,8 +12,9 @@ import { WelcomeModal } from "@/components/welcome-modal"
 declare global {
   interface Window {
     electronAPI: {
-      toggleMiniMode: (isMinimized: boolean) => void
-      restoreFromMini: () => void
+      toggleMiniMode: (isMinimized: boolean) => Promise<void>
+      restoreFromMini: () => Promise<void>
+      updateFatigueDetection: (enabled: boolean) => Promise<void>
     }
     drowsiness: {
       predictFromBase64: (base64: string) => Promise<{
@@ -50,7 +51,7 @@ export default function FatigueTracker() {
   const [settings, setSettings] = useState<TimerSettings>(defaultSettings)
   const [fatigueStatus, setFatigueStatus] = useState<"alert" | "drowsy">("alert")
   const [drowsyDuration, setDrowsyDuration] = useState(0) // seconds of continuous drowsiness
-  const [lastStatusChange, setLastStatusChange] = useState(Date.now())
+  // const [lastStatusChange, setLastStatusChange] = useState(Date.now())
 
   // Check if it's the first visit when the component mounts
   useEffect(() => {
@@ -85,10 +86,10 @@ export default function FatigueTracker() {
   const handleFatigueStatusUpdate = (status: "alert" | "drowsy") => {
     if (!settings.fatigueDetection.enabled) return
 
-    const now = Date.now()
+    // const now = Date.now()
     if (status !== fatigueStatus) {
       setFatigueStatus(status)
-      setLastStatusChange(now)
+      // setLastStatusChange(now)
       
       if (status === "alert") {
         setDrowsyDuration(0) // Reset drowsy duration when alert
@@ -258,18 +259,25 @@ export default function FatigueTracker() {
     }
   }, [])
 
-  const handleMinimize = () => {
+  // Notify Electron when fatigue detection settings change
+  useEffect(() => {
+    if (window.electronAPI && window.electronAPI.updateFatigueDetection) {
+      window.electronAPI.updateFatigueDetection(settings.fatigueDetection.enabled)
+    }
+  }, [settings.fatigueDetection.enabled])
+
+  const handleMinimize = async () => {
     const newMinimizedState = !isMinimized
     setIsMinimized(newMinimizedState)
     if (window.electronAPI) {
-      window.electronAPI.toggleMiniMode(newMinimizedState)
+      await window.electronAPI.toggleMiniMode(newMinimizedState)
     }
   }
 
-  const handleRestoreFromMini = () => {
+  const handleRestoreFromMini = async () => {
     setIsMinimized(false)
     if (window.electronAPI) {
-      window.electronAPI.restoreFromMini()
+      await window.electronAPI.restoreFromMini()
     }
   }
 
@@ -290,7 +298,7 @@ export default function FatigueTracker() {
   if (isMinimized) {
     return (
       <div className="min-h-screen glass--effect flex items-center justify-center transition-all duration-300">
-        <div className={`w-48 h-64 flex flex-col items-center justify-between p-4 glass--effect rounded-xl border-2 transition-all duration-500 ${getBorderColor(currentStatus)} relative`}>
+        <div className={`w-full h-full flex flex-col items-center justify-between p-2 glass--effect rounded-xl border-2 transition-all duration-500 relative`}>
           {/* Timer and Status */}
           <div className="flex flex-col items-center gap-1">
             <div className="flex items-center gap-3 pt-3">
@@ -300,12 +308,14 @@ export default function FatigueTracker() {
                   {isRunning ? "Focus" : "Paused"}
                 </div>
               </div>
-              <div className="text-lg">{getEmoticon()}</div>
+              {settings.fatigueDetection.enabled && (
+                <div className="text-lg">{getEmoticon()}</div>
+              )}
             </div>
             
             {/* Camera Preview */}
             <div className="flex-shrink-0 scale-80 transform">
-              <WebcamPreview onFatigueChange={handleFatigueStatusUpdate} />
+              <WebcamPreview onFatigueChange={handleFatigueStatusUpdate} fatigueDetectionEnabled={settings.fatigueDetection.enabled} />
             </div>
           </div>
           

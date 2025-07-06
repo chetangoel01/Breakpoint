@@ -6,6 +6,7 @@ let win;
 let originalBounds = null;
 let isMiniMode = false;
 let latestStatus = "alert"; // Store the latest aggregated status
+let fatigueDetectionEnabled = true; // Track fatigue detection status
 
 function createWindow() {
   win = new BrowserWindow({
@@ -80,11 +81,15 @@ function enterMiniMode() {
   
   win.setAspectRatio(0);
   
+  // Use different window size based on fatigue detection status
+  const miniSize = fatigueDetectionEnabled 
+    ? { width: 190, height: 256 }  // With camera
+    : { width: 160, height: 90 }; // Without camera (more compact)
+  
   win.setBounds({
     x: 30,
     y: 30,
-    width: 190,
-    height: 256
+    ...miniSize
   });
 }
 
@@ -115,7 +120,7 @@ function exitMiniMode() {
 
 app.whenReady().then(createWindow);
 
-ipcMain.on('toggle-mini-mode', (event, shouldEnterMiniMode) => {
+ipcMain.handle('toggle-mini-mode', async (event, shouldEnterMiniMode) => {
   if (!win) return;
 
   console.log('🔄 [MAIN] Toggle mini mode:', shouldEnterMiniMode);
@@ -134,8 +139,28 @@ ipcMain.on('toggle-mini-mode', (event, shouldEnterMiniMode) => {
   }
 });
 
-ipcMain.on('restore-from-mini', () => {
+ipcMain.handle('restore-from-mini', async () => {
   exitMiniMode();
+});
+
+// Handle fatigue detection settings update
+ipcMain.handle('update-fatigue-detection', async (event, enabled) => {
+  fatigueDetectionEnabled = enabled;
+  console.log('🔄 [MAIN] Fatigue detection updated:', enabled);
+  
+  // If in mini mode, update window size immediately
+  if (win && isMiniMode) {
+    const miniSize = fatigueDetectionEnabled 
+      ? { width: 160, height: 256 }  // With camera
+      : { width: 160, height: 90 }; // Without camera (more compact)
+    
+    win.setBounds({
+      x: win.getBounds().x,
+      y: win.getBounds().y,
+      ...miniSize
+    });
+    console.log('📏 [MAIN] Updated mini window size:', miniSize);
+  }
 });
 
 // Handle aggregated status from fatigue detector
