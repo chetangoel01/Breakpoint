@@ -1,61 +1,64 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { Button } from "@/components/ui/button"
-import { Coffee, StretchVerticalIcon as Stretch, Eye, X } from "lucide-react"
+import { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { Coffee, StretchVerticalIcon as Stretch, Eye, X } from "lucide-react";
 
 interface BreakModalProps {
-  isOpen: boolean
-  onClose: () => void
-  sessionCount: number
-  shortBreakDuration?: number
-  longBreakDuration?: number
-  longBreakInterval?: number
+  isOpen: boolean;
+  onClose: () => void;
+  sessionCount: number;
+  shortBreakDuration?: number;
+  longBreakDuration?: number;
+  longBreakInterval?: number;
 }
 
-export function BreakModal({ 
-  isOpen, 
-  onClose, 
-  sessionCount, 
+export function BreakModal({
+  isOpen,
+  onClose,
+  sessionCount,
   shortBreakDuration = 5,
   longBreakDuration = 15,
-  longBreakInterval = 4
+  longBreakInterval = 4,
 }: BreakModalProps) {
-  const [breakTime, setBreakTime] = useState(shortBreakDuration * 60)
-  const [isBreakRunning, setIsBreakRunning] = useState(false)
+  const [breakTime, setBreakTime] = useState(shortBreakDuration * 60);
+  const [isBreakRunning, setIsBreakRunning] = useState(false);
 
-  const isLongBreak = sessionCount % longBreakInterval === 0 && sessionCount > 0
+  const isLongBreak =
+    sessionCount % longBreakInterval === 0 && sessionCount > 0;
 
   useEffect(() => {
     if (isOpen) {
-      setBreakTime(isLongBreak ? longBreakDuration * 60 : shortBreakDuration * 60)
-      setIsBreakRunning(true)
+      setBreakTime(
+        isLongBreak ? longBreakDuration * 60 : shortBreakDuration * 60,
+      );
+      setIsBreakRunning(true);
     }
-  }, [isOpen, isLongBreak, shortBreakDuration, longBreakDuration])
+  }, [isOpen, isLongBreak, shortBreakDuration, longBreakDuration]);
 
   useEffect(() => {
-    let interval: NodeJS.Timeout
+    let interval: NodeJS.Timeout;
 
     if (isBreakRunning && breakTime > 0) {
       interval = setInterval(() => {
         setBreakTime((prev) => {
           if (prev <= 1) {
-            setIsBreakRunning(false)
-            return 0
+            setIsBreakRunning(false);
+            return 0;
           }
-          return prev - 1
-        })
-      }, 1000)
+          return prev - 1;
+        });
+      }, 1000);
     }
 
-    return () => clearInterval(interval)
-  }, [isBreakRunning, breakTime])
+    return () => clearInterval(interval);
+  }, [isBreakRunning, breakTime]);
 
   const formatTime = (seconds: number) => {
-    const mins = Math.floor(seconds / 60)
-    const secs = seconds % 60
-    return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`
-  }
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
+  };
 
   const breakActivities = [
     {
@@ -73,9 +76,9 @@ export function BreakModal({
       title: "Rest Eyes",
       description: "Look away from the screen",
     },
-  ]
+  ];
 
-  if (!isOpen) return null
+  if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
@@ -84,7 +87,12 @@ export function BreakModal({
 
       {/* Modal */}
       <div className="relative w-full max-w-sm backdrop-blur-xl bg-white/90 dark:bg-slate-800/90 rounded-2xl p-5 border border-white/20 dark:border-slate-700/50 shadow-2xl">
-        <Button onClick={onClose} variant="ghost" size="icon" className="absolute top-3 right-3 h-6 w-6 rounded-full">
+        <Button
+          onClick={onClose}
+          variant="ghost"
+          size="icon"
+          className="absolute top-3 right-3 h-6 w-6 rounded-full"
+        >
           <X className="w-3 h-3" />
         </Button>
 
@@ -94,7 +102,9 @@ export function BreakModal({
               {isLongBreak ? "Long Break Time!" : "Break Time!"}
             </h2>
             <p className="text-sm text-slate-600 dark:text-slate-300">
-              Great work! Time for a {isLongBreak ? longBreakDuration : shortBreakDuration} minute break.
+              Great work! Time for a{" "}
+              {isLongBreak ? longBreakDuration : shortBreakDuration} minute
+              break.
             </p>
           </div>
 
@@ -116,7 +126,9 @@ export function BreakModal({
 
           {/* Break Activities */}
           <div className="space-y-2">
-            <h3 className="text-xs font-medium text-slate-600 dark:text-slate-300">Suggested Activities</h3>
+            <h3 className="text-xs font-medium text-slate-600 dark:text-slate-300">
+              Suggested Activities
+            </h3>
             <div className="grid gap-1.5">
               {breakActivities.map((activity, index) => (
                 <div
@@ -125,8 +137,12 @@ export function BreakModal({
                 >
                   <activity.icon className="w-4 h-4 text-slate-600 dark:text-slate-300" />
                   <div className="text-left">
-                    <div className="text-xs font-medium text-slate-800 dark:text-slate-100">{activity.title}</div>
-                    <div className="text-[10px] text-slate-500 dark:text-slate-400">{activity.description}</div>
+                    <div className="text-xs font-medium text-slate-800 dark:text-slate-100">
+                      {activity.title}
+                    </div>
+                    <div className="text-[10px] text-slate-500 dark:text-slate-400">
+                      {activity.description}
+                    </div>
                   </div>
                 </div>
               ))}
@@ -154,5 +170,5 @@ export function BreakModal({
         </div>
       </div>
     </div>
-  )
+  );
 }

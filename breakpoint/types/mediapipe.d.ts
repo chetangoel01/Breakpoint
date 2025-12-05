@@ -1,4 +1,4 @@
-declare module '@mediapipe/face_detection' {
+declare module "@mediapipe/face_detection" {
   export interface FaceDetectionConfig {
     locateFile?: (file: string) => string;
   }
@@ -29,7 +29,7 @@ declare module '@mediapipe/face_detection' {
   export class FaceDetection {
     constructor(config: FaceDetectionConfig);
     setOptions(options: {
-      model?: 'short' | 'full';
+      model?: "short" | "full";
       minDetectionConfidence?: number;
     }): void;
     initialize(): Promise<void>;
@@ -39,10 +39,10 @@ declare module '@mediapipe/face_detection' {
   }
 }
 
-declare module '@mediapipe/camera_utils' {
+declare module "@mediapipe/camera_utils" {
   export class Camera {
     constructor(videoElement: HTMLVideoElement, config: any);
     start(): Promise<void>;
     stop(): void;
   }
-} 
+}

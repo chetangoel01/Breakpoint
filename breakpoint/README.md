@@ -15,19 +15,21 @@ Breakpoint is an intelligent Pomodoro timer application that helps you maintain 
 
 ## Prerequisites
 
-- Node.js 18+ 
+- Node.js 18+
 - Python 3.8+ (for ML model)
 - npm or yarn
 
 ## Installation
 
 1. Clone the repository:
+
 ```bash
 git clone https://github.com/yourusername/breakpoint.git
 cd breakpoint
 ```
 
 2. Install dependencies:
+
 ```bash
 npm install
 # or
@@ -35,6 +37,7 @@ yarn install
 ```
 
 3. Set up the Python environment for the ML model:
+
 ```bash
 cd model
 python -m venv venv
@@ -65,6 +68,7 @@ This will start both the Next.js development server and the Electron application
 ### Build Commands
 
 1. Build the application:
+
 ```bash
 npm run electron:dist
 # or
@@ -78,6 +82,7 @@ This will create distributable packages in the `dist` directory.
 To containerize the application for development or testing:
 
 1. Create a Dockerfile in the root directory:
+
 ```dockerfile
 FROM node:18-slim
 
@@ -112,11 +117,13 @@ CMD ["npm", "start"]
 ```
 
 2. Build the Docker image:
+
 ```bash
 docker build -t breakpoint .
 ```
 
 3. Run the container:
+
 ```bash
 docker run -p 3000:3000 breakpoint
 ```

@@ -1,8 +1,8 @@
-"use client"
+"use client";
 
 interface TimerBarProps {
-  progress: number
-  isRunning: boolean
+  progress: number;
+  isRunning: boolean;
 }
 
 export function TimerBar({ progress, isRunning }: TimerBarProps) {
@@ -11,7 +11,9 @@ export function TimerBar({ progress, isRunning }: TimerBarProps) {
       <div className="relative h-2 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
         <div
           className={`absolute left-0 top-0 h-full rounded-full transition-all duration-1000 ease-out ${
-            isRunning ? "bg-gradient-to-r from-blue-500 to-indigo-600" : "bg-gradient-to-r from-slate-400 to-slate-500"
+            isRunning
+              ? "bg-gradient-to-r from-blue-500 to-indigo-600"
+              : "bg-gradient-to-r from-slate-400 to-slate-500"
           }`}
           style={{ width: `${Math.max(0, Math.min(100, progress))}%` }}
         />
@@ -36,5 +38,5 @@ export function TimerBar({ progress, isRunning }: TimerBarProps) {
         <span>25:00</span>
       </div>
     </div>
-  )
+  );
 }

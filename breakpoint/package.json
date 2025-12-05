@@ -20,18 +20,14 @@
     "@mediapipe/face_detection": "^0.4.1646425229",
     "@mediapipe/face_mesh": "^0.4.1633559619",
     "@radix-ui/react-slot": "^1.2.3",
-    "@tailwindcss/postcss": "^4.1.11",
-    "autoprefixer": "^10.4.21",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "lucide-react": "^0.525.0",
     "next": "15.2.4",
-    "postcss": "^8.5.6",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "sharp": "^0.34.2",
     "tailwind-merge": "^3.3.1",
-    "tailwindcss": "^4.1.11",
     "tailwindcss-animate": "^1.0.7"
   },
   "build": {
@@ -66,7 +62,15 @@
     }
   },
   "devDependencies": {
+    "@next/eslint-plugin-next": "^16.0.7",
     "@types/react": "19.1.8",
-    "electron": "^37.2.0"
+    "electron": "^37.2.0",
+    "eslint-config-next": "^16.0.7",
+    "prettier": "^3.7.4",
+    "prettier-plugin-tailwindcss": "^0.7.2",
+    "@tailwindcss/postcss": "^4.1.11",
+    "autoprefixer": "^10.4.21",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^4.1.11"
   }
 }

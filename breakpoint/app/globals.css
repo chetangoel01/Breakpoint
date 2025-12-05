@@ -56,45 +56,45 @@
     color: hsl(var(--foreground));
     overflow: hidden;
   }
-  
+
   /* Ensure backdrop blur works in Electron */
   html {
     background: transparent;
   }
-  
+
   /* Responsive scaling utilities */
   .scale-text {
     font-size: clamp(2rem, 8vw, 4.5rem);
   }
-  
+
   .scale-text-lg {
     font-size: clamp(1.5rem, 6vw, 2.5rem);
   }
-  
+
   .scale-text-md {
     font-size: clamp(1rem, 4vw, 1.5rem);
   }
-  
+
   .scale-text-sm {
     font-size: clamp(0.75rem, 3vw, 1rem);
   }
-  
+
   .scale-text-xs {
     font-size: clamp(0.5rem, 2vw, 0.75rem);
   }
-  
+
   .scale-padding {
     padding: clamp(1rem, 4vw, 2rem);
   }
-  
+
   .scale-gap {
     gap: clamp(0.5rem, 2vw, 1rem);
   }
-  
+
   .scale-space-y {
     --space-y: clamp(0.5rem, 2vw, 1rem);
   }
-  
+
   .scale-space-y > * + * {
     margin-top: var(--space-y);
   }
@@ -119,8 +119,9 @@
 
 /* Smooth transitions */
 * {
-  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow,
-    transform, filter, backdrop-filter;
+  transition-property:
+    color, background-color, border-color, text-decoration-color, fill, stroke,
+    opacity, box-shadow, transform, filter, backdrop-filter;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 300ms;
 }
